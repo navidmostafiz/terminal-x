@@ -1,0 +1,84 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>terminal-x</title>
+    <link rel="icon" type="image/png" href="http://www.iconarchive.com/download/i41509/fi3ur/fruitsalad/strawberry.ico">
+
+    <style>
+        body {
+            background-color: blue;
+        }
+
+        .toutC,
+        .tinC {
+            background-color: blue;
+            color: white;
+            width: 400pt;
+            margin: 0pt;
+            padding: 0pt;
+            border: none;
+            border-width: 0;
+            box-shadow: none;
+            display: unset;
+            -webkit-appearance: unset;
+        }
+
+        /* pseudo elements */
+        :focus {
+            outline: -webkit-focus-ring-color auto 0px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <textarea id="toutID" class="toutC" name="toutn" row=1>admin: terminal-x is loading...</textarea>
+    </br>
+    <input id="tinID" class="tinC" type="text" name="username:" maxlength="200" size="200" autofocus>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        //SOCKET CONNECTION USING DEFAULT CONNECTION
+        var socket = io();
+        var tout = document.getElementById("toutID")
+        var tin = document.getElementById("tinID");
+        // STATIC
+        tout.innerHTML = "admin: loading terminal-x...";
+        tin.value = "navid: "
+        // DYNAMIC
+        //+++++++++++++++++++++++++++++++++++++
+        //FOR 1-1 SERVER-CLIENT SOCKET CONNECTION
+        //RECEIVE: MSG FROM SERVER TO CLIENT USING SPECIFIC EVENT NAME = fromServerEvent
+        //APPEND TO OUTPUT TERMINAL
+        socket.on('fromServerEvent', function (data) {
+            // console.log(data);
+            tout.innerHTML += "\n" + data
+            tout.rows += 1;
+        });
+        //+++++++++++++++++++++++++++++++++++++
+
+        //USER GAVE INPUT, APPEND TO OUTPUT TERMINAL + SEND TO SERVER
+        tin.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                //+++++++++++++++++++++++++++++++++++++
+                //FOR 1-1 CLEINT-SERVER SOCKET
+                //SEND TO SERVER
+                //SENDING: MSG FROM CLIENT TO SERVER USING SPECIFIC EVENT NAME = clientEvent
+                socket.emit('fromClientEvent', tin.value);
+                // APPEND TO OUTPUT TERMINAL + RESET INPUT TERMINAL
+                tout.innerHTML += "\n" + tin.value
+                tout.rows += 1;
+                tin.value = "navid: "
+                //+++++++++++++++++++++++++++++++++++++
+            }
+        });
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>terminal-x</title>
+    <link rel="icon" type="image/png" href="http://www.iconarchive.com/download/i41509/fi3ur/fruitsalad/strawberry.ico">
+
+    <style>
+        body {
+            background-color: blue;
+        }
+
+        .toutC,
+        .tinC {
+            background-color: blue;
+            color: white;
+            width: 400pt;
+            margin: 0pt;
+            padding: 0pt;
+            border: none;
+            border-width: 0;
+            box-shadow: none;
+            display: unset;
+            -webkit-appearance: unset;
+        }
+
+        /* pseudo elements */
+        :focus {
+            outline: -webkit-focus-ring-color auto 0px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <textarea id="toutID" class="toutC" name="toutn" row=1>admin: terminal-x is loading...</textarea>
+    </br>
+    <input id="tinID" class="tinC" type="text" name="username:" maxlength="200" size="200" autofocus>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        //SOCKET CONNECTION USING DEFAULT CONNECTION
+        // var socket = io();
+        var socket2 = io('/terminalx_nsp');
+        var tout = document.getElementById("toutID")
+        var tin = document.getElementById("tinID");
+        // STATIC
+        tout.innerHTML = "admin: loading terminal-x...";
+        tin.value = "navid: "
+        // DYNAMIC
+        //+++++++++++++++++++++++++++++++++++++
+        //FOR BRAODCAST 1-MANY - MULTI CLIENT - SERVER
+        //RECIEVE BROADCAST, SOCKET CONNECTION USING SPECIFIC NAMESPACE
+        socket2.on('terminalx_broadcast', function (data) {
+            tout.innerHTML += "\n" + data
+            tout.rows += 1;
+        });
+        //+++++++++++++++++++++++++++++++++++++
+
+        //USER GAVE INPUT, APPEND TO OUTPUT TERMINAL + SEND TO SERVER
+        tin.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                //+++++++++++++++++++++++++++++++++++++
+                //BROADCAST TO SERVER
+                socket2.emit('terminalx_broadcast', tin.value);
+                //RESET INPUT TERMINAL
+                tin.value = "navid: "
+                //+++++++++++++++++++++++++++++++++++++
+            }
+        });
+
+    </script>
+</body>
+
+</html>
