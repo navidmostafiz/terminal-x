@@ -13,13 +13,15 @@ io.on('connection', function (socket) {
 
     //Send a message when 
     setTimeout(function () {
-        //SENDING MSG FROM SERVER TO CLIENT USING SPECIFIC EVENT NAME = testerEvent
-        socket.emit('testerEvent', { description: '\nMSG FROM SERVER TO CLIENT USING SPECIFIC EVENT NAME = testerEvent' });
-    }, 4000);
+        //SENDING MSG FROM SERVER TO CLIENT USING SPECIFIC EVENT NAME = fromServerEvent
+        socket.emit('fromServerEvent', { description: 'admin: welcome to the terminal-x.' });
+    }, 2000);
 
     //RECIEVE MSG FROM CLIENT TO SERVER USING SPECIFIC EVENT NAME = clientEvent
-    socket.on('clientEvent', function (data) {
+    socket.on('fromClientEvent', function (data) {
         console.log(data);
+        //sending back to cleint, what was recieved from client
+        socket.emit('fromServerEvent', { description: data });
     });
 
     socket.on('disconnect', function () {

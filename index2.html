@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Hello world</title>
+</head>
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+    //SOCKET CONNECTION USING DEFAULT CONNECTION
+    var socket = io();
+    //RECEIVE: MSG FROM SERVER TO CLIENT USING SPECIFIC EVENT NAME = testerEvent
+    socket.on('testerEvent', function (data) { document.write(data.description) });
+    //SENDING: MSG FROM CLIENT TO SERVER USING SPECIFIC EVENT NAME = clientEvent
+    socket.emit('clientEvent', '\nMSG FROM CLIENT TO SERVER USING SPECIFIC EVENT NAME = clientEvent');
+
+    //SOCKET CONNECTION USING SPECIFIC NAMESPACE
+    // var socket2 = io('/my-namespace');
+    // socket2.on('hi', function (data) {
+    //     document.body.innerHTML = '';
+    //     document.write(data);
+    // });
+</script>
+
+<body>Hello world</body>
+
+</html>

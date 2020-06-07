@@ -12,19 +12,7 @@
             background-color: blueviolet;
         }
 
-        .toutC {
-            background-color: blue;
-            color: white;
-            width: 400pt;
-            margin: 0pt;
-            padding: 0pt;
-            border: none;
-            border-width: 0;
-            box-shadow: none;
-            display: unset;
-            -webkit-appearance: unset;
-        }
-
+        .toutC,
         .tinC {
             background-color: blue;
             color: white;
@@ -52,26 +40,41 @@
     <input id="tinID" class="tinC" type="text" name="username:" maxlength="200" size="200" autofocus>
 
 
-
+    <script src="/socket.io/socket.io.js"></script>
     <script>
+        //SOCKET CONNECTION USING DEFAULT CONNECTION
+        var socket = io();
         var tout = document.getElementById("toutID")
         var tin = document.getElementById("tinID");
         // function myFunction() {
         //   document.getElementById("demo").innerHTML = "Paragraph changed.";
         // }
         // STATIC
-        tout.innerHTML = "admin: welcome to the terminal-x";
+        tout.innerHTML = "admin: loading terminal-x...";
         tin.value = "navid: "
         // DYNAMIC
+        //RECEIVE: MSG FROM SERVER TO CLIENT USING SPECIFIC EVENT NAME = fromServerEvent
+        //APPEND TO TEXTAREA
+        socket.on('fromServerEvent', function (data) {
+            // console.log(data.description);
+            tout.innerHTML += "\n" + data.description
+            tout.rows += 1;
+        });
+
+        //USER GAVE INPUT, APPEND TO OUTPUT TERMINAL + SEND TO SERVER
         tin.addEventListener("keyup", function (event) {
             if (event.keyCode === 13) {
                 event.preventDefault();
-                //TODO:
+                //TODO: SEND TO SERVER
+                //SENDING: MSG FROM CLIENT TO SERVER USING SPECIFIC EVENT NAME = clientEvent
+                socket.emit('fromClientEvent', tin.value);
+                //TODO: APPEND TO OUTPUT TERMINAL + RESET INPUT TERMINAL
                 tout.innerHTML += "\n" + tin.value
                 tout.rows += 1;
                 tin.value = "navid: "
             }
         });
+
     </script>
 </body>
 
