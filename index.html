@@ -1,0 +1,73 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>terminal-x</title>
+    <link rel="icon" type="image/png" href="http://www.iconarchive.com/download/i41509/fi3ur/fruitsalad/strawberry.ico">
+
+    <style>
+        body {
+            background-color: blueviolet;
+        }
+
+        .toutC {
+            background-color: blue;
+            color: white;
+            width: 400pt;
+            margin: 0pt;
+            padding: 0pt;
+            border: none;
+            border-width: 0;
+            box-shadow: none;
+            display: unset;
+            -webkit-appearance: unset;
+        }
+
+        .tinC {
+            background-color: blue;
+            color: white;
+            width: 400pt;
+            margin: 0pt;
+            padding: 0pt;
+            border: none;
+            border-width: 0;
+            box-shadow: none;
+            display: unset;
+            -webkit-appearance: unset;
+        }
+
+        /* pseudo elements */
+        :focus {
+            outline: -webkit-focus-ring-color auto 0px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <textarea id="toutID" class="toutC" name="toutn">admin: terminal-x is loading...</textarea>
+    </br>
+    <input id="tinID" class="tinC" type="text" name="username:" maxlength="200" size="200" autofocus>
+
+
+
+    <script>
+        var tout = document.getElementById("toutID").innerHTML = "admin: welcome to the terminal-x";
+        var tin = document.getElementById("tinID");
+        // function myFunction() {
+        //   document.getElementById("demo").innerHTML = "Paragraph changed.";
+        // }
+
+        tin.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                //TODO:
+                alert("enter pressed!");
+            }
+        });
+    </script>
+</body>
+
+</html>
