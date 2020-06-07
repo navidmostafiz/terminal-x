@@ -1,6 +1,8 @@
 # :strawberry: terminal-x
 trying to build world's smallest stupid approach chat terminal
 
+![terminal-x screenshot](https://github.com/navidmostafiz/terminal-x/blob/master/screenshot.png)
+
 # CLONE: 
 git clone https://github.com/navidmostafiz/terminal-x.git
 # INSTALL: 
