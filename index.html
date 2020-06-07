@@ -54,17 +54,22 @@
 
 
     <script>
-        var tout = document.getElementById("toutID").innerHTML = "admin: welcome to the terminal-x";
+        var tout = document.getElementById("toutID")
         var tin = document.getElementById("tinID");
         // function myFunction() {
         //   document.getElementById("demo").innerHTML = "Paragraph changed.";
         // }
-
+        // STATIC
+        tout.innerHTML = "admin: welcome to the terminal-x";
+        tin.value = "navid: "
+        // DYNAMIC
         tin.addEventListener("keyup", function (event) {
             if (event.keyCode === 13) {
                 event.preventDefault();
                 //TODO:
-                alert("enter pressed!");
+                tout.innerHTML += "\n" + tin.value
+                tout.rows += 1;
+                tin.value = "navid: "
             }
         });
     </script>

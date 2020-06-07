@@ -1,0 +1,28 @@
+{
+  "name": "terminalx",
+  "version": "1.0.0",
+  "description": "socket terminal chat app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/navidmostafiz/terminal-x.git"
+  },
+  "keywords": [
+    "socket"
+  ],
+  "author": "navidmostafiz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/navidmostafiz/terminal-x/issues"
+  },
+  "homepage": "https://github.com/navidmostafiz/terminal-x#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "randomcolor": "^0.5.4",
+    "socket.io": "^2.3.0",
+    "uuid": "^8.1.0"
+  }
+}
