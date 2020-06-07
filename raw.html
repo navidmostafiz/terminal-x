@@ -9,22 +9,10 @@
 
     <style>
         body {
-            background-color: blueviolet;
-        }
-
-        .toutC {
             background-color: blue;
-            color: white;
-            width: 400pt;
-            margin: 0pt;
-            padding: 0pt;
-            border: none;
-            border-width: 0;
-            box-shadow: none;
-            display: unset;
-            -webkit-appearance: unset;
         }
 
+        .toutC,
         .tinC {
             background-color: blue;
             color: white;
@@ -47,26 +35,68 @@
 </head>
 
 <body>
-    <textarea id="toutID" class="toutC" name="toutn">admin: terminal-x is loading...</textarea>
+    <textarea id="toutID" class="toutC" name="toutn" row=1>admin: terminal-x is loading...</textarea>
     </br>
     <input id="tinID" class="tinC" type="text" name="username:" maxlength="200" size="200" autofocus>
 
 
-
+    <script src="/socket.io/socket.io.js"></script>
     <script>
-        var tout = document.getElementById("toutID").innerHTML = "admin: welcome to the terminal-x";
+        //SOCKET CONNECTION USING DEFAULT CONNECTION
+        // var socket = io();
+        var socket2 = io('/terminalx_nsp');
+        var tout = document.getElementById("toutID")
         var tin = document.getElementById("tinID");
         // function myFunction() {
         //   document.getElementById("demo").innerHTML = "Paragraph changed.";
         // }
+        // STATIC
+        tout.innerHTML = "admin: loading terminal-x...";
+        tin.value = "navid: "
+        // DYNAMIC
 
+        //+++++++++++++++++++++++++++++++++++++
+        //FOR 1-1 SERVER-CLIENT SOCKET CONNECTION
+        //RECEIVE: MSG FROM SERVER TO CLIENT USING SPECIFIC EVENT NAME = fromServerEvent
+        //APPEND TO OUTPUT TERMINAL
+        // socket.on('fromServerEvent', function (data) {
+        //     // console.log(data.msg);
+        //     tout.innerHTML += "\n" + data.msg
+        //     tout.rows += 1;
+        // });
+        //+++++++++++++++++++++++++++++++++++++
+
+        //FOR BRAODCAST 1-MANY - MULTI CLIENT - SERVER
+        //RECIEVE BROADCAST, SOCKET CONNECTION USING SPECIFIC NAMESPACE
+        socket2.on('terminalx_broadcast', function (data) {
+            tout.innerHTML += "\n" + data
+            tout.rows += 1;
+        });
+
+
+        //USER GAVE INPUT, APPEND TO OUTPUT TERMINAL + SEND TO SERVER
         tin.addEventListener("keyup", function (event) {
             if (event.keyCode === 13) {
                 event.preventDefault();
-                //TODO:
-                alert("enter pressed!");
+                //+++++++++++++++++++++++++++++++++++++
+                //FOR 1-1 CLEINT-SERVER SOCKET
+                //SEND TO SERVER
+                //SENDING: MSG FROM CLIENT TO SERVER USING SPECIFIC EVENT NAME = clientEvent
+                // socket.emit('fromClientEvent', tin.value);
+                //APPEND TO OUTPUT TERMINAL + RESET INPUT TERMINAL
+                // tout.innerHTML += "\n" + tin.value
+                // tout.rows += 1;
+                // tin.value = "navid: "
+                //+++++++++++++++++++++++++++++++++++++
+
+                //BROADCAST TO SERVER
+                socket2.emit('terminalx_broadcast', tin.value);
+                //RESET INPUT TERMINAL
+                tin.value = "navid: "
+
             }
         });
+
     </script>
 </body>
 
