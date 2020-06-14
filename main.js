@@ -52,6 +52,6 @@ app.get('/single', (req, res) => {
     });
 });
 
-http.listen(80, function () {
-    console.log('STARTED NODEJS IO SOCKET SERVER. listening on localhost:80');
+http.listen(process.env.PORT, function () {
+    console.log('STARTED NODEJS IO SOCKET SERVER. listening on localhost:' + process.env.PORT);
 });
