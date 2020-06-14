@@ -53,5 +53,5 @@ app.get('/single', (req, res) => {
 });
 
 http.listen(80, function () {
-    console.log('STARTED NODEJS IO SOCKET SERVER. listening on localhost:3000');
+    console.log('STARTED NODEJS IO SOCKET SERVER. listening on localhost:80');
 });
