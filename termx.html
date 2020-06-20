@@ -18,9 +18,9 @@
         .ttokC,
         .toutC,
         .tinC {
-            background-color: blue;
+            background-color: black;
             font-size: 12pt;
-            color: white;
+            color: darkred;
             width: 100%;
             margin: 0;
             padding: 0;
@@ -42,9 +42,10 @@
 <body>
     <!-- ALL HTML GOES HERE -->
     <!-- <div> -->
-    <input id="tunID" class="tunC" type="password" name="tunN" placeholder="enter username">
-    <input id="ttokID" class="ttokC" type="text" name="ttokN" placeholder="enter secret token">
-    <textarea id="toutID" class="toutC" name="toutN" row=0 placeholder="admin: terminal-x is loading..."></textarea>
+    <input id="tunID" class="tunC" type="text" name="tunN" placeholder="enter username">
+    <input id="ttokID" class="ttokC" type="password" name="ttokN" placeholder="enter secret token">
+    <textarea id="toutID" class="toutC" name="toutN" row=0 readonly
+        placeholder="admin: terminal-x is loading..."></textarea>
     <input id="tinID" class="tinC" type="text" name="tinN" placeholder=" says">
     <!-- </div> -->
     <!-- ALL HTML GOES HERE -->
@@ -62,22 +63,39 @@
         var ttokTerm = "";
         var msg = ""
         // INITIAL
-        tun.focus()
+        // document.body.addEventListener('click', makeTINFocus(document.body), true); 
+        // tout.addEventListener('mouseenter', makeTINFocus(tout)); 
+        tun.focus();
         toggleShow(ttok);
         toggleShow(tout);
         toggleShow(tin);
         //+++++++++++++++++++++++++++++++++++++
         //FOR BRAODCAST 1-MANY - MULTI CLIENT - SERVER
         //LISTENER TO BROADCAST, SOCKET CONNECTION USING SPECIFIC NAMESPACE
+        //+++++++++++++++++++++++++++++++++++++
         socket2.on('terminalx_broadcast', function (data) {
-            tout.innerHTML += data + "\n";
+            tout.innerHTML += decryptedMSG(data) + "\n";
             tout.rows += 1;
         });
+        //+++++++++++++++++++++++++++++++++++++
+        //SEND TO BROADCAST SERVER:
+        //+++++++++++++++++++++++++++++++++++++
+        function sendToServer(msg) {
+            socket2.emit('terminalx_broadcast', encryptedMSG(msg));
+        }
+        //+++++++++++++++++++++++++++++++++++++
+        function decryptedMSG(value) {
+            return value
+        }
+        //+++++++++++++++++++++++++++++++++++++
+        function encryptedMSG(value) {
+            return value;
+        }
         //+++++++++++++++++++++++++++++++++++++
         function removeElement(xx) {
             xx.value = "";
             xx.blur();
-            toggleShow(xx)
+            toggleShow(xx);
         }
         //HIDE/SHOW ELEMENTS
         function toggleShow(x) {
@@ -93,14 +111,19 @@
             if (event.keyCode === 13) {
                 event.preventDefault();
                 //+++++++++++++++++++++++++++++++++++++
-                tunTerm = tun.value;
-                //REMOVE TUN
-                removeElement(tun)
-                //SHOW TTOK
-                toggleShow(ttok);
-                ttok.focus();
-                //mod tin
-                tin.placeholder = " say something " + tunTerm;
+                if (tun.value != "") {
+                    tunTerm = tun.value;
+                    //REMOVE TUN
+                    removeElement(tun);
+                    //SHOW TTOK
+                    toggleShow(ttok);
+                    ttok.focus();
+                    //mod tin
+                    tin.placeholder = "say something " + tunTerm;
+                } else {
+                    tun.placeholder = "admin: what was that?";
+                    setTimeout(() => { tun.placeholder = "enter username"; }, 1000);
+                }
                 //+++++++++++++++++++++++++++++++++++++
             }
         });
@@ -110,13 +133,18 @@
             if (event.keyCode === 13) {
                 event.preventDefault();
                 //+++++++++++++++++++++++++++++++++++++
-                ttokTerm = ttok.value
-                //REMOVE TTOK
-                removeElement(ttok)
-                //SHOW TERMINAL OUT AND INT
-                toggleShow(tout)
-                toggleShow(tin)
-                tin.focus();
+                if (ttok.value != "") {
+                    ttokTerm = ttok.value;
+                    //REMOVE TTOK
+                    removeElement(ttok);
+                    //SHOW TERMINAL OUT AND INT
+                    toggleShow(tout);
+                    toggleShow(tin);
+                    tin.focus();
+                } else {
+                    ttok.placeholder = "admin: what was that?";
+                    setTimeout(() => { ttok.placeholder = "enter secret token"; }, 1000);
+                }
                 //+++++++++++++++++++++++++++++++++++++
             }
         });
@@ -126,15 +154,42 @@
             if (event.keyCode === 13) {
                 event.preventDefault();
                 //+++++++++++++++++++++++++++++++++++++
-                //BROADCAST TO SERVER
-                msg = tunTerm + ": " + tin.value;
-                socket2.emit('terminalx_broadcast', msg);
-                //RESET INPUT TERMINAL
-                tin.value = ""
+                if (tin.value != "") {
+                    //BROADCAST TO SERVER
+                    msg = tunTerm + ": " + tin.value;
+                    sendToServer(msg)
+                    //RESET INPUT TERMINAL
+                    tin.value = ""
+                } else {
+                    tin.placeholder = "admin: what was that?";
+                    setTimeout(() => { tin.placeholder = "say something " + tunTerm; }, 1000);
+                }
                 //+++++++++++++++++++++++++++++++++++++
             }
         });
+        //+++++++++++++++++++++++++++++++++++++
+        function makeTINFocus() {
+            tout.blur;
+            tin.focus();
+        }
+        //+++++++++++++++++++++++++++++++++++++
+        tin.onmouseout = makeTINFocus;
+        tout.onmouseenter = makeTINFocus;
+        tout.onclick = makeTINFocus;
+        Document.body.onclick = makeTINFocus;
+        Document.body.onmouseenter = makeTINFocus;
 
+//+++++++++++++++++++++++++++++++++++++
+        // window.setTimeout(heartbeat, 1000);
+
+        // function heartbeat() {
+        //     x = tout
+        //     if (x.style.display === "none") {
+        //         x.style.display = "block";
+        //     } else {
+        //         x.style.display = "none";
+        //     }
+        // }
     </script>
 </body>
 

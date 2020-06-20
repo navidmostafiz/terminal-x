@@ -1,24 +1,29 @@
 <!doctype html>
-
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <title>terminal-x</title>
-    <link rel="icon" type="image/png" href="http://www.iconarchive.com/download/i41509/fi3ur/fruitsalad/strawberry.ico">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
     <style>
         body {
-            background-color: blue;
+            background-color: black;
+            margin: 0;
+            padding: 0;
+            display: inline;
         }
 
+        .tunC,
+        .ttokC,
         .toutC,
         .tinC {
-            background-color: blue;
-            color: white;
-            width: 400pt;
-            margin: 0pt;
-            padding: 0pt;
+            background-color: black;
+            font-size: 12pt;
+            color: darkred;
+            width: 100%;
+            margin: 0;
+            padding: 0;
             border: none;
             border-width: 0;
             box-shadow: none;
@@ -35,44 +40,148 @@
 </head>
 
 <body>
-    <textarea id="toutID" class="toutC" name="toutn" row=1>admin: terminal-x is loading...</textarea>
-    </br>
-    <input id="tinID" class="tinC" type="text" name="username:" maxlength="200" size="200" autofocus>
-
+    <!-- ALL HTML GOES HERE -->
+    <!-- <div> -->
+    <input id="tunID" class="tunC" type="text" name="tunN" placeholder="enter username">
+    <input id="ttokID" class="ttokC" type="password" name="ttokN" placeholder="enter secret token">
+    <textarea id="toutID" class="toutC" name="toutN" row=0 readonly
+        placeholder="admin: terminal-x is loading..."></textarea>
+    <input id="tinID" class="tinC" type="text" name="tinN" placeholder=" says">
+    <!-- </div> -->
+    <!-- ALL HTML GOES HERE -->
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
         //SOCKET CONNECTION USING DEFAULT CONNECTION
         // var socket = io();
         var socket2 = io('/terminalx_nsp');
-        var tout = document.getElementById("toutID")
+        var tun = document.getElementById("tunID");
+        var ttok = document.getElementById("ttokID");
+        var tout = document.getElementById("toutID");
         var tin = document.getElementById("tinID");
-        // STATIC
-        tout.innerHTML = "admin: loading terminal-x...";
-        tin.value = "navid: "
-        // DYNAMIC
+        var tunTerm = "";
+        var ttokTerm = "";
+        var msg = ""
+        // INITIAL
+        // document.body.addEventListener('click', makeTINFocus(document.body), true); 
+        // tout.addEventListener('mouseenter', makeTINFocus(tout)); 
+        tun.focus();
+        toggleShow(ttok);
+        toggleShow(tout);
+        toggleShow(tin);
         //+++++++++++++++++++++++++++++++++++++
         //FOR BRAODCAST 1-MANY - MULTI CLIENT - SERVER
-        //RECIEVE BROADCAST, SOCKET CONNECTION USING SPECIFIC NAMESPACE
+        //LISTENER TO BROADCAST, SOCKET CONNECTION USING SPECIFIC NAMESPACE
+        //+++++++++++++++++++++++++++++++++++++
         socket2.on('terminalx_broadcast', function (data) {
-            tout.innerHTML += "\n" + data
+            tout.innerHTML += data + "\n";
             tout.rows += 1;
         });
         //+++++++++++++++++++++++++++++++++++++
+        //SEND TO BROADCAST SERVER:
+        //+++++++++++++++++++++++++++++++++++++
+        function sendToServer(msg) {
+            socket2.emit('terminalx_broadcast', msg);
+        }
+        //+++++++++++++++++++++++++++++++++++++
+        function removeElement(xx) {
+            xx.value = "";
+            xx.blur();
+            toggleShow(xx);
+        }
+        //HIDE/SHOW ELEMENTS
+        function toggleShow(x) {
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+
+        //USERNAME GIVEN, HIDE IT AND SHOW TOKEN INPUT
+        tun.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                //+++++++++++++++++++++++++++++++++++++
+                if (tun.value != "") {
+                    tunTerm = tun.value;
+                    //REMOVE TUN
+                    removeElement(tun);
+                    //SHOW TTOK
+                    toggleShow(ttok);
+                    ttok.focus();
+                    //mod tin
+                    tin.placeholder = "say something " + tunTerm;
+                } else {
+                    tun.placeholder = "admin: what was that?";
+                    setTimeout(() => { tun.placeholder = "enter username"; }, 1000);
+                }
+                //+++++++++++++++++++++++++++++++++++++
+            }
+        });
+
+        //TOKEN GIVEN, HIDE IT AND SHOW TERMINAL OUTPUT AND INPUT
+        ttok.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                //+++++++++++++++++++++++++++++++++++++
+                if (ttok.value != "") {
+                    ttokTerm = ttok.value;
+                    //REMOVE TTOK
+                    removeElement(ttok);
+                    //SHOW TERMINAL OUT AND INT
+                    toggleShow(tout);
+                    toggleShow(tin);
+                    tin.focus();
+                } else {
+                    ttok.placeholder = "admin: what was that?";
+                    setTimeout(() => { ttok.placeholder = "enter secret token"; }, 1000);
+                }
+                //+++++++++++++++++++++++++++++++++++++
+            }
+        });
 
         //USER GAVE INPUT, APPEND TO OUTPUT TERMINAL + SEND TO SERVER
         tin.addEventListener("keyup", function (event) {
             if (event.keyCode === 13) {
                 event.preventDefault();
                 //+++++++++++++++++++++++++++++++++++++
-                //BROADCAST TO SERVER
-                socket2.emit('terminalx_broadcast', tin.value);
-                //RESET INPUT TERMINAL
-                tin.value = "navid: "
+                if (tin.value != "") {
+                    //BROADCAST TO SERVER
+                    msg = tunTerm + ": " + tin.value;
+                    sendToServer(msg)
+                    //RESET INPUT TERMINAL
+                    tin.value = ""
+                } else {
+                    tin.placeholder = "admin: what was that?";
+                    setTimeout(() => { tin.placeholder = "say something " + tunTerm; }, 1000);
+                }
                 //+++++++++++++++++++++++++++++++++++++
             }
         });
+        //+++++++++++++++++++++++++++++++++++++
+        function makeTINFocus() {
+            tout.blur;
+            tin.focus();
+        }
+        //+++++++++++++++++++++++++++++++++++++
+        tin.onmouseout = makeTINFocus;
+        tout.onmouseenter = makeTINFocus;
+        tout.onclick = makeTINFocus;
+        Document.body.onclick = makeTINFocus;
+        Document.body.onmouseenter = makeTINFocus;
 
+//+++++++++++++++++++++++++++++++++++++
+        // window.setTimeout(heartbeat, 1000);
+
+        // function heartbeat() {
+        //     x = tout
+        //     if (x.style.display === "none") {
+        //         x.style.display = "block";
+        //     } else {
+        //         x.style.display = "none";
+        //     }
+        // }
     </script>
 </body>
 
