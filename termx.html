@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>terminal-x</title>
@@ -8,6 +9,9 @@
     <style>
         body {
             background-color: black;
+            margin: 0;
+            padding: 0;
+            display: inline;
         }
 
         .tunC,
@@ -15,11 +19,11 @@
         .toutC,
         .tinC {
             background-color: blue;
-            font-size: 80%;
+            font-size: 12pt;
             color: white;
             width: 100%;
-            margin: 0pt;
-            padding: 0pt;
+            margin: 0;
+            padding: 0;
             border: none;
             border-width: 0;
             box-shadow: none;
@@ -37,15 +41,12 @@
 
 <body>
     <!-- ALL HTML GOES HERE -->
-    <div>
-        <input id="tunID" class="tunC" type="password" name="tunN" placeholder="enter username" autofocus>
-        </br>
-        <input id="ttokID" class="ttokC" type="text" name="ttokN" placeholder="enter secret token">
-        </br>
-        <textarea id="toutID" class="toutC" name="toutN" row=0 placeholder="admin: terminal-x is loading..."></textarea>
-        </br>
-        <input id="tinID" class="tinC" type="text" name="tinN" placeholder=" says navid">
-    </div>
+    <!-- <div> -->
+    <input id="tunID" class="tunC" type="password" name="tunN" placeholder="enter username">
+    <input id="ttokID" class="ttokC" type="text" name="ttokN" placeholder="enter secret token">
+    <textarea id="toutID" class="toutC" name="toutN" row=0 placeholder="admin: terminal-x is loading..."></textarea>
+    <input id="tinID" class="tinC" type="text" name="tinN" placeholder=" says">
+    <!-- </div> -->
     <!-- ALL HTML GOES HERE -->
 
     <script src="/socket.io/socket.io.js"></script>
@@ -59,13 +60,12 @@
         var tin = document.getElementById("tinID");
         var tunTerm = "";
         var ttokTerm = "";
-        // STATIC
-        // tout.innerHTML = "admin: loading terminal-x...";
-        // tin.value = "navid: ";
-        ttok.style.display = "none";
-        tout.style.display = "none";
-        tin.style.display = "none";
-        // DYNAMIC
+        var msg = ""
+        // INITIAL
+        tun.focus()
+        toggleShow(ttok);
+        toggleShow(tout);
+        toggleShow(tin);
         //+++++++++++++++++++++++++++++++++++++
         //FOR BRAODCAST 1-MANY - MULTI CLIENT - SERVER
         //LISTENER TO BROADCAST, SOCKET CONNECTION USING SPECIFIC NAMESPACE
@@ -75,7 +75,9 @@
         });
         //+++++++++++++++++++++++++++++++++++++
         function removeElement(xx) {
-            xx.parentNode.removeChild(element);
+            xx.value = "";
+            xx.blur();
+            toggleShow(xx)
         }
         //HIDE/SHOW ELEMENTS
         function toggleShow(x) {
@@ -93,12 +95,12 @@
                 //+++++++++++++++++++++++++++++++++++++
                 tunTerm = tun.value;
                 //REMOVE TUN
-                tun.style.height = 0;
-                tun.blur();
-                toggleShow(tun);
+                removeElement(tun)
                 //SHOW TTOK
                 toggleShow(ttok);
                 ttok.focus();
+                //mod tin
+                tin.placeholder = " say something " + tunTerm;
                 //+++++++++++++++++++++++++++++++++++++
             }
         });
@@ -108,11 +110,9 @@
             if (event.keyCode === 13) {
                 event.preventDefault();
                 //+++++++++++++++++++++++++++++++++++++
-                tunTerm = tun.value
-                //HIDE TTOK
-                ttok.style.height = 0
-                ttok.blur();
-                toggleShow(ttok)
+                ttokTerm = ttok.value
+                //REMOVE TTOK
+                removeElement(ttok)
                 //SHOW TERMINAL OUT AND INT
                 toggleShow(tout)
                 toggleShow(tin)
@@ -127,7 +127,8 @@
                 event.preventDefault();
                 //+++++++++++++++++++++++++++++++++++++
                 //BROADCAST TO SERVER
-                socket2.emit('terminalx_broadcast', tin.value);
+                msg = tunTerm + ": " + tin.value;
+                socket2.emit('terminalx_broadcast', msg);
                 //RESET INPUT TERMINAL
                 tin.value = ""
                 //+++++++++++++++++++++++++++++++++++++
