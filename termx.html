@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>terminal-x</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <style>
+        body {
+            background-color: black;
+        }
+
+        .tunC,
+        .ttokC,
+        .toutC,
+        .tinC {
+            background-color: blue;
+            font-size: 80%;
+            color: white;
+            width: 100%;
+            margin: 0pt;
+            padding: 0pt;
+            border: none;
+            border-width: 0;
+            box-shadow: none;
+            display: unset;
+            -webkit-appearance: unset;
+        }
+
+        /* pseudo elements */
+        :focus {
+            outline: -webkit-focus-ring-color auto 0px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- ALL HTML GOES HERE -->
+    <div>
+        <input id="tunID" class="tunC" type="password" name="tunN" placeholder="enter username" autofocus>
+        </br>
+        <input id="ttokID" class="ttokC" type="text" name="ttokN" placeholder="enter secret token">
+        </br>
+        <textarea id="toutID" class="toutC" name="toutN" row=0 placeholder="admin: terminal-x is loading..."></textarea>
+        </br>
+        <input id="tinID" class="tinC" type="text" name="tinN" placeholder=" says navid">
+    </div>
+    <!-- ALL HTML GOES HERE -->
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        //SOCKET CONNECTION USING DEFAULT CONNECTION
+        // var socket = io();
+        var socket2 = io('/terminalx_nsp');
+        var tun = document.getElementById("tunID");
+        var ttok = document.getElementById("ttokID");
+        var tout = document.getElementById("toutID");
+        var tin = document.getElementById("tinID");
+        var tunTerm = "";
+        var ttokTerm = "";
+        // STATIC
+        // tout.innerHTML = "admin: loading terminal-x...";
+        // tin.value = "navid: ";
+        ttok.style.display = "none";
+        tout.style.display = "none";
+        tin.style.display = "none";
+        // DYNAMIC
+        //+++++++++++++++++++++++++++++++++++++
+        //FOR BRAODCAST 1-MANY - MULTI CLIENT - SERVER
+        //LISTENER TO BROADCAST, SOCKET CONNECTION USING SPECIFIC NAMESPACE
+        socket2.on('terminalx_broadcast', function (data) {
+            tout.innerHTML += data + "\n";
+            tout.rows += 1;
+        });
+        //+++++++++++++++++++++++++++++++++++++
+        function removeElement(xx) {
+            xx.parentNode.removeChild(element);
+        }
+        //HIDE/SHOW ELEMENTS
+        function toggleShow(x) {
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+
+        //USERNAME GIVEN, HIDE IT AND SHOW TOKEN INPUT
+        tun.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                //+++++++++++++++++++++++++++++++++++++
+                tunTerm = tun.value;
+                //REMOVE TUN
+                tun.style.height = 0;
+                tun.blur();
+                toggleShow(tun);
+                //SHOW TTOK
+                toggleShow(ttok);
+                ttok.focus();
+                //+++++++++++++++++++++++++++++++++++++
+            }
+        });
+
+        //TOKEN GIVEN, HIDE IT AND SHOW TERMINAL OUTPUT AND INPUT
+        ttok.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                //+++++++++++++++++++++++++++++++++++++
+                tunTerm = tun.value
+                //HIDE TTOK
+                ttok.style.height = 0
+                ttok.blur();
+                toggleShow(ttok)
+                //SHOW TERMINAL OUT AND INT
+                toggleShow(tout)
+                toggleShow(tin)
+                tin.focus();
+                //+++++++++++++++++++++++++++++++++++++
+            }
+        });
+
+        //USER GAVE INPUT, APPEND TO OUTPUT TERMINAL + SEND TO SERVER
+        tin.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                //+++++++++++++++++++++++++++++++++++++
+                //BROADCAST TO SERVER
+                socket2.emit('terminalx_broadcast', tin.value);
+                //RESET INPUT TERMINAL
+                tin.value = ""
+                //+++++++++++++++++++++++++++++++++++++
+            }
+        });
+
+    </script>
+</body>
+
+</html>
