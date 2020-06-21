@@ -3,26 +3,33 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 const PORT = process.env.PORT | 3000
 
-//routes
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/termx.html');
 });
 
+// server side code: ROOM
+io.sockets.on('connection', function (socket) {
+    console.log('EVENT=connection');
 
-// //SOCKET CONNECTION USING SPECIFIC NAMESPACE
-var nsp = io.of('/terminalx_nsp');
-nsp.on('connection', function (socket) {
-    console.log('LOG: Client connected using namespace terminalx_nsp');
-    nsp.emit('terminalx_broadcast', 'admin: you are connected to terminal-x.');
-
-    //RECIEVE MSG FROM CLIENT TO SERVER USING SPECIFIC EVENT NAME = clientEvent
-    socket.on('terminalx_broadcast', function (data) {
-        console.log("from cleint terminalx_broadcast = " + data);
-        //sending back to client, what was recieved from client
-        nsp.emit('terminalx_broadcast', data);
+    //EACH TIME WE WANT TO CREATE A NEW ROOM FROM CLEINT SIDE, EVENT = CREATE
+    socket.on('join_room', function (room) {
+        console.log("EVENT=create & ROOM=" + room);
+        console.log(socket.rooms);
+        socket.join(room);
     });
-});
 
+    //LISTEN TO ROOMS
+    socket.on('message_to_server', function ({troom, tunValue, msg}) {
+        console.log("EVENT=message_to_server & room=" + troom + "& username=" + tunValue + "& msg=" + msg);
+        io.in(troom).emit('message_to_client', msg);
+    });
+
+    //A user disconnect from room
+    socket.on('disconnect', function () {
+        console.log('EVENT=disconnect');
+    });
+
+});
 
 http.listen(PORT, function () {
     console.log('TERMINAL-X STARTED ON PORT: ' + PORT);

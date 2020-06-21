@@ -2,9 +2,10 @@
   "name": "terminalx",
   "version": "1.0.0",
   "description": "socket terminal chat app",
-  "main": "main.js",
+  "main": "mini.js",
   "scripts": {
-    "start": "node termx.js",
+    "start": "node mini.js",
+    "mini": "nodemon mini.js",
     "termx": "nodemon termx.js"
   },
   "repository": {

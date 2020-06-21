@@ -41,17 +41,25 @@
 
 <body>
     <!-- ALL HTML GOES HERE -->
+    <!-- <div> -->
     <input id="tunID" class="tunC" type="text" name="tunN" placeholder="enter username">
     <input id="ttokID" class="ttokC" type="password" name="ttokN" placeholder="enter secret token">
     <textarea id="toutID" class="toutC" name="toutN" row=0 readonly
         placeholder="admin: terminal-x is loading..."></textarea>
     <input id="tinID" class="tinC" type="text" name="tinN" placeholder=" says">
+    <!-- </div> -->
     <!-- ALL HTML GOES HERE -->
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        //SOCKET CONNECTION CHATROOM
+        //SOCKET CONNECTION USING DEFAULT CONNECTION
+        // var socket = io();
+        // var socket2 = io('/terminalx_nsp');
+
+        // client side cod: ROOM
         var socket1 = io.connect();
+
+
         var tun = document.getElementById("tunID");
         var ttok = document.getElementById("ttokID");
         var tout = document.getElementById("toutID");
@@ -61,23 +69,50 @@
         var msg = ""
         var troom = ""
         // INITIAL
+        // document.body.addEventListener('click', makeTINFocus(document.body), true); 
+        // tout.addEventListener('mouseenter', makeTINFocus(tout)); 
         tun.focus();
         toggleShow(ttok);
         toggleShow(tout);
         toggleShow(tin);
         //+++++++++++++++++++++++++++++++++++++
-        // LISTENER TO SERVER:
+        //FOR BRAODCAST 1-MANY - MULTI CLIENT - SERVER
+        //LISTENER TO BROADCAST, SOCKET CONNECTION USING SPECIFIC NAMESPACE
         //+++++++++++++++++++++++++++++++++++++
+        // socket2.on('terminalx_broadcast', function (data) {
+        //     tout.innerHTML += decryptedMSG(data) + "\n";
+        //     tout.rows += 1;
+        // });
+
+        //JOIN AND LSITEN TO ROOM USING TTOK
+        // if (ttokValue != "") {
+        //     alert("Now we can join room ttokValue = " + ttokValue);
+
+        //     socket2.on('terminalx_broadcast', function (socket) {
+        //         socket.join(ttokValue);
+
+        //         tout.innerHTML += decryptedMSG(data) + "\n";
+        //         tout.rows += 1;
+        //     });
+        // }
+
+        //LISTEN
         socket1.on('message_to_client', function (data) {
-            console.log('message_to_client=', decryptedMSG(data));
+            console.log('message_to_client=', data);
             tout.innerHTML += decryptedMSG(data) + "\n";
             tout.rows += 1;
         });
+
         //+++++++++++++++++++++++++++++++++++++
-        // SEND TO SERVER:
+        //SEND TO BROADCAST SERVER:
         //+++++++++++++++++++++++++++++++++++++
         function sendToServer(msg, troom) {
+            // socket2.emit('terminalx_broadcast', encryptedMSG(msg));
+            //SEND TO ROOM
             console.log("sendToServer for troom = " + troom);
+            // io.to(ttokValue).emit(encryptedMSG(msg));
+            // io.sockets.to(troom).emit('msg_from_room_client', encryptedMSG(msg));
+            // io.to(socket.room.id).emit("activity-notification","<b>"+socket.me.name+"</b> has joined the room");
             socket1.emit('message_to_server', { troom, tunValue, msg });
         }
         //+++++++++++++++++++++++++++++++++++++
@@ -179,6 +214,20 @@
         tin.onmouseout = makeTINFocus;
         tout.onmouseenter = makeTINFocus;
         tout.onclick = makeTINFocus;
+        // Document.body.onclick = makeTINFocus;
+        // Document.body.onmouseenter = makeTINFocus;
+
+//+++++++++++++++++++++++++++++++++++++
+        // window.setTimeout(heartbeat, 1000);
+
+        // function heartbeat() {
+        //     x = tout
+        //     if (x.style.display === "none") {
+        //         x.style.display = "block";
+        //     } else {
+        //         x.style.display = "none";
+        //     }
+        // }
     </script>
 </body>
 
