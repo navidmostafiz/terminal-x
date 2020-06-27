@@ -51,3 +51,9 @@ heroku ps:scale web=0
 ```
 heroku logs --tail
 ```
+* DEPLOY CHANGES, commit and push app to git and then push to heroku
+```
+git add .
+git commit -a -m "changes"
+git push heroku master
+```
