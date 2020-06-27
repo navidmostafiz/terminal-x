@@ -1,7 +1,7 @@
 # :strawberry: terminal-x
 IO-SOCKET NODEJS TERMINAL STYLE CHAT APPLICATION
 
-![terminal-x screenshot](https://github.com/navidmostafiz/terminal-x/blob/master/screenshot.png)
+![terminal-x screenshot](https://github.com/navidmostafiz/terminal-x/blob/master/screenshot2.png)
 
 # CLONE: 
 git clone https://github.com/navidmostafiz/terminal-x.git
