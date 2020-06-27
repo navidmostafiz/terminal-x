@@ -56,4 +56,5 @@ heroku logs --tail
 git add .
 git commit -a -m "changes"
 git push heroku master
+heroku ps:scale web=1
 ```
