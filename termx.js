@@ -14,19 +14,17 @@ io.sockets.on('connection', function (socket) {
     console.log('EVENT=connection');
 
     //EACH TIME WE WANT TO CREATE A NEW ROOM FROM CLEINT SIDE, EVENT = CREATE
-    socket.on('join_room', function (room) {
-        console.log("EVENT=create & ROOM=" + room);
+    socket.on('join_room', function (roomName) {
+        console.log("EVENT=create & roomName=" + roomName);
         console.log(socket.rooms);
-        socket.join(room);
+        socket.join(roomName);
     });
 
     //LISTEN TO ROOMS
-    socket.on('message_to_server', function ({troom, tunValue, msg}) {
-        console.log("EVENT=message_to_server & room=" + troom + "& username=" + tunValue + "& msg=" + msg);
-
-        const text = checkText(msg);
-
-        io.in(troom).emit('message_to_client', text);
+    socket.on('message_to_server', function ({roomName, from, msg}) {
+        console.log("EVENT=message_to_server & roomName=" + roomName + "& from=" + from + "& msg=" + msg);
+        msg = checkText(msg);
+        io.in(roomName).emit('message_to_client', {from, msg});
     });
 
     //A user disconnect from room

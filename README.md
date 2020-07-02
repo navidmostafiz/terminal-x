@@ -58,3 +58,8 @@ git commit -a -m "changes"
 git push heroku master
 heroku ps:scale web=1
 ```
+
+* RENAME HOERKU APP:
+```
+heroku apps:rename NEW_NAME
+```

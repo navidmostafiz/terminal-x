@@ -43,8 +43,14 @@
     <!-- ALL HTML GOES HERE -->
     <input id="tunID" class="tunC" type="text" name="tunN" placeholder="enter username">
     <input id="ttokID" class="ttokC" type="password" name="ttokN" placeholder="enter secret token">
-    <textarea id="toutID" class="toutC" name="toutN" row=0 readonly
-        placeholder="admin: terminal-x is loading..."></textarea>
+    <!-- <textarea id="toutID" class="toutC" name="toutN" row=0 readonly
+        placeholder="admin: terminal-x is loading..."></textarea> -->
+
+    <div id="toutID" class="toutC" name="toutN">
+        admin: welcome to terminal-x
+
+    </div>
+
     <input id="tinID" class="tinC" type="text" name="tinN" placeholder=" says">
     <!-- ALL HTML GOES HERE -->
 
@@ -56,29 +62,105 @@
         var ttok = document.getElementById("ttokID");
         var tout = document.getElementById("toutID");
         var tin = document.getElementById("tinID");
-        var tunValue = "";
+        var userName = "";
         var ttokValue = "";
         var msg = "";
-        var troom = "";
+        var roomName = "";
         // INITIAL
         tun.focus();
         toggleShow(ttok);
         toggleShow(tout);
         toggleShow(tin);
         //+++++++++++++++++++++++++++++++++++++
+        function addLink(from, msg) {
+            var breakNODE = document.createElement("BR");
+            var anchoreNODE = document.createElement('a');
+            anchoreNODE.setAttribute('href', msg);
+            anchoreNODE.setAttribute('target', '_blank');
+            var textnode = document.createTextNode(decryptedMSG(msg));
+            anchoreNODE.appendChild(textnode);
+            tout.appendChild(breakNODE);
+            tout.appendChild(anchoreNODE);
+        }
+        //+++++++++++++++++++++++++++++++++++++
+        function youtube_parser(url) {
+            var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+            var match = url.match(regExp);
+            return (match && match[7].length == 11) ? match[7] : false;
+        }
+
+        function addYoutubeLink(from, msg) {
+            var paraNODE = document.createElement("P");
+            paraNODE.style.margin = 0;
+            var textnode = document.createTextNode(from + ": " + decryptedMSG(msg));
+            paraNODE.appendChild(textnode);
+            //++++++++++++++++++++++++
+            var youtubeVideoID = youtube_parser(msg);
+            var youtubeImageLink = "https://img.youtube.com/vi/" + youtubeVideoID + "/0.jpg";
+            var anchoreNODE = document.createElement('a');
+            anchoreNODE.setAttribute('href', msg);
+            anchoreNODE.setAttribute('target', '_blank');
+            var imageNode = document.createElement("IMG");
+            imageNode.setAttribute('src', youtubeImageLink);
+            imageNode.setAttribute('height', 100);
+            anchoreNODE.appendChild(imageNode);
+            //++++++++++++++++++++++++
+            tout.appendChild(paraNODE);
+            tout.appendChild(anchoreNODE);
+        }
+        //+++++++++++++++++++++++++++++++++++++
+        function addText(from, msg) {
+            var paraNODE = document.createElement("P");
+            paraNODE.style.margin = 0;
+            var textnode = document.createTextNode(from + ": " + decryptedMSG(msg));
+            paraNODE.appendChild(textnode);
+            tout.appendChild(paraNODE);
+        }
+        //+++++++++++++++++++++++++++++++++++++
+        function getDataType(msg) {
+            if (msg.includes("youtube")) {
+                return "youtubeLink";
+            } else if (msg.includes(".com") || msg.includes(".net") || msg.includes(".org")) {
+                return "link";
+            }
+            else {
+                return "text";
+            }
+        }
+        //+++++++++++++++++++++++++++++++++++++
         // LISTENER TO SERVER:
         //+++++++++++++++++++++++++++++++++++++
-        socket1.on('message_to_client', function (data) {
-            console.log('message_to_client=', decryptedMSG(data));
-            tout.innerHTML += decryptedMSG(data) + "\n";
-            tout.rows += 1;
+        socket1.on('message_to_client', function ({ from, msg }) {
+            console.log("LOG: [EVENT=message_to_client] [roomName=" + roomName + "] [from=" + from + "] [msg=" + msg + "]");
+            // ******
+            // tout.innerHTML += "</br>" + decryptedMSG(data);
+            // tout.rows += 1;
+            // ******
+
+            var dataType = getDataType(msg);
+
+            switch (dataType) {
+                case "youtubeLink":
+                    addYoutubeLink(from, msg);
+                    break;
+                case "link":
+                    addLink(from, msg);
+                    break;
+                case "text":
+                    addText(from, msg);
+                    break;
+                default:
+                    addText(from, msg)
+            }
+
+
         });
         //+++++++++++++++++++++++++++++++++++++
         // SEND TO SERVER:
         //+++++++++++++++++++++++++++++++++++++
-        function sendToServer(msg, troom) {
-            console.log("sendToServer for troom = " + troom);
-            socket1.emit('message_to_server', { troom, tunValue, msg });
+        function sendToServer(msg, roomName) {
+            console.log("LOG: [EVENT=message_to_server] [roomName=" + roomName + "] [from=" + userName + "] [msg=" + msg + "]");
+            socket1.emit('message_to_server', { roomName, from: userName, msg });
         }
         //+++++++++++++++++++++++++++++++++++++
         function decryptedMSG(value) {
@@ -109,14 +191,14 @@
                 event.preventDefault();
                 //+++++++++++++++++++++++++++++++++++++
                 if (tun.value != "") {
-                    tunValue = tun.value;
+                    userName = tun.value;
                     //REMOVE TUN
                     removeElement(tun);
                     //SHOW TTOK
                     toggleShow(ttok);
                     ttok.focus();
                     //mod tin
-                    tin.placeholder = "say something " + tunValue;
+                    tin.placeholder = "say something " + userName;
                 } else {
                     tun.placeholder = "admin: what was that?";
                     setTimeout(() => { tun.placeholder = "enter username"; }, 1000);
@@ -134,8 +216,8 @@
                     //SAVE TTOK VALUE
                     ttokValue = ttok.value;
                     //CREATE A ROOM IN SEVERSIDE: ROOM
-                    troom = ttokValue;
-                    socket1.emit('join_room', troom);
+                    roomName = ttokValue;
+                    socket1.emit('join_room', roomName);
 
                     //REMOVE TTOK
                     removeElement(ttok);
@@ -158,14 +240,12 @@
                 //+++++++++++++++++++++++++++++++++++++
                 if (tin.value != "") {
                     //SEND TO SERVER
-                    msg = tunValue + ": " + tin.value;
-                    troom = ttokValue;
-                    sendToServer(msg, troom);
+                    sendToServer(tin.value, ttokValue);
                     //RESET INPUT TERMINAL
                     tin.value = ""
                 } else {
                     tin.placeholder = "admin: what was that?";
-                    setTimeout(() => { tin.placeholder = "say something " + tunValue; }, 1000);
+                    setTimeout(() => { tin.placeholder = "say something " + userName; }, 1000);
                 }
                 //+++++++++++++++++++++++++++++++++++++
             }
@@ -179,6 +259,10 @@
         tin.onmouseout = makeTINFocus;
         tout.onmouseenter = makeTINFocus;
         tout.onclick = makeTINFocus;
+
+
+
+
     </script>
 </body>
 
