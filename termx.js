@@ -6,36 +6,37 @@ var io = require('socket.io')(http);
 const PORT = process.env.PORT || 5000
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/termx.html');
+  res.sendFile(__dirname + '/termx.html');
 });
 
 // server side code: ROOM
 io.sockets.on('connection', function (socket) {
-    console.log('EVENT=connection');
+  console.log("LOG: [EVENT=connection] New client connected.");
 
-    //EACH TIME WE WANT TO CREATE A NEW ROOM FROM CLEINT SIDE, EVENT = CREATE
-    socket.on('join_room', function (roomName) {
-        console.log("EVENT=create & roomName=" + roomName);
-        console.log(socket.rooms);
-        socket.join(roomName);
-    });
+  //EACH TIME WE WANT TO CREATE A NEW ROOM FROM CLEINT SIDE, EVENT = CREATE
+  socket.on('join_room', function (room_name) {
+    console.log("LOG: [EVENT=join_room] [room_name=" + room_name + "]");
+    console.log(socket.rooms);
+    socket.join(room_name);
+  });
 
-    //LISTEN TO ROOMS
-    socket.on('message_to_server', function ({roomName, from, msg}) {
-        console.log("EVENT=message_to_server & roomName=" + roomName + "& from=" + from + "& msg=" + msg);
-        msg = checkText(msg);
-        io.in(roomName).emit('message_to_client', {from, msg});
-    });
+  //LISTEN TO ROOMS
+  socket.on('message_to_server', function ({ room_name, from, msg }) {
+    console.log("LOG: [EVENT=message_to_server] [room_name=" + room_name + "] [from=" + from + "] [msg=" + msg + "]");
+    msg = checkText(msg);
+    io.in(room_name).emit('message_to_client', { from, msg });
+    console.log("LOG: [EVENT=message_to_client] [room_name=" + room_name + "] [from=" + from + "] [msg=" + msg + "]");
+  });
 
-    //A user disconnect from room
-    socket.on('disconnect', function () {
-        console.log('EVENT=disconnect');
-    });
+  //A user disconnect from room
+  socket.on('disconnect', function () {
+    console.log("LOG: [EVENT=disconnect] A client has disconnected.");
+  });
 
 });
 
 http.listen(PORT, function () {
-    console.log('TERMINAL-X STARTED ON PORT: ' + PORT);
+  console.log('TERMINAL-X STARTED ON PORT: ' + PORT);
 });
 
 "use strict";

@@ -8,16 +8,16 @@
 
     <style>
         body {
-            background-color: black;
+            background-color: blueviolet;
             margin: 0;
             padding: 0;
             display: inline;
         }
 
-        .tunC,
-        .ttokC,
-        .toutC,
-        .tinC {
+        .usernameC,
+        .tokenC,
+        .outputC,
+        .inputC {
             background-color: black;
             font-size: 12pt;
             color: darkred;
@@ -41,36 +41,37 @@
 
 <body>
     <!-- ALL HTML GOES HERE -->
-    <input id="tunID" class="tunC" type="text" name="tunN" placeholder="enter username">
-    <input id="ttokID" class="ttokC" type="password" name="ttokN" placeholder="enter secret token">
-    <!-- <textarea id="toutID" class="toutC" name="toutN" row=0 readonly
+    <input id="usernameID" class="usernameC" type="text" name="usernameN" placeholder="enter username">
+    <input id="tokenID" class="tokenC" type="password" name="tokenN" placeholder="enter secret token">
+    <!-- <textarea id="outputID" class="outputC" name="outputDOMN" row=0 readonly
         placeholder="admin: terminal-x is loading..."></textarea> -->
 
-    <div id="toutID" class="toutC" name="toutN">
+    <div id="outputID" class="outputC" name="outputDOMN">
         admin: welcome to terminal-x
 
     </div>
 
-    <input id="tinID" class="tinC" type="text" name="tinN" placeholder=" says">
+    <input id="inputID" class="inputC" type="text" name="inputDOMN" placeholder=" says">
     <!-- ALL HTML GOES HERE -->
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
         //SOCKET CONNECTION CHATROOM
-        var socket1 = io.connect();
-        var tun = document.getElementById("tunID");
-        var ttok = document.getElementById("ttokID");
-        var tout = document.getElementById("toutID");
-        var tin = document.getElementById("tinID");
-        var userName = "";
-        var ttokValue = "";
+        var sock = io.connect();
+        var bodyDOM = document.getElementsByTagName("BODY")[0];
+        var usernameDOM = document.getElementById("usernameID");
+        var tokenDOM = document.getElementById("tokenID");
+        var outputDOM = document.getElementById("outputID");
+        var inputDOM = document.getElementById("inputID");
+        var username = "";
+        var token = "";
         var msg = "";
-        var roomName = "";
+        var room_name = "";
         // INITIAL
-        tun.focus();
-        toggleShow(ttok);
-        toggleShow(tout);
-        toggleShow(tin);
+        usernameDOM.focus();
+        toggleShow(tokenDOM);
+        toggleShow(outputDOM);
+        toggleShow(inputDOM);
         //+++++++++++++++++++++++++++++++++++++
         function addLink(from, msg) {
             var breakNODE = document.createElement("BR");
@@ -79,8 +80,8 @@
             anchoreNODE.setAttribute('target', '_blank');
             var textnode = document.createTextNode(decryptedMSG(msg));
             anchoreNODE.appendChild(textnode);
-            tout.appendChild(breakNODE);
-            tout.appendChild(anchoreNODE);
+            outputDOM.appendChild(breakNODE);
+            outputDOM.appendChild(anchoreNODE);
         }
         //+++++++++++++++++++++++++++++++++++++
         function youtube_parser(url) {
@@ -105,8 +106,8 @@
             imageNode.setAttribute('height', 100);
             anchoreNODE.appendChild(imageNode);
             //++++++++++++++++++++++++
-            tout.appendChild(paraNODE);
-            tout.appendChild(anchoreNODE);
+            outputDOM.appendChild(paraNODE);
+            outputDOM.appendChild(anchoreNODE);
         }
         //+++++++++++++++++++++++++++++++++++++
         function addText(from, msg) {
@@ -114,7 +115,7 @@
             paraNODE.style.margin = 0;
             var textnode = document.createTextNode(from + ": " + decryptedMSG(msg));
             paraNODE.appendChild(textnode);
-            tout.appendChild(paraNODE);
+            outputDOM.appendChild(paraNODE);
         }
         //+++++++++++++++++++++++++++++++++++++
         function getDataType(msg) {
@@ -130,11 +131,11 @@
         //+++++++++++++++++++++++++++++++++++++
         // LISTENER TO SERVER:
         //+++++++++++++++++++++++++++++++++++++
-        socket1.on('message_to_client', function ({ from, msg }) {
-            console.log("LOG: [EVENT=message_to_client] [roomName=" + roomName + "] [from=" + from + "] [msg=" + msg + "]");
+        sock.on('message_to_client', function ({ from, msg }) {
+            console.log("LOG: [EVENT=message_to_client] [room_name=" + room_name + "] [from=" + from + "] [msg=" + msg + "]");
             // ******
-            // tout.innerHTML += "</br>" + decryptedMSG(data);
-            // tout.rows += 1;
+            // outputDOM.innerHTML += "</br>" + decryptedMSG(data);
+            // outputDOM.rows += 1;
             // ******
 
             var dataType = getDataType(msg);
@@ -158,9 +159,9 @@
         //+++++++++++++++++++++++++++++++++++++
         // SEND TO SERVER:
         //+++++++++++++++++++++++++++++++++++++
-        function sendToServer(msg, roomName) {
-            console.log("LOG: [EVENT=message_to_server] [roomName=" + roomName + "] [from=" + userName + "] [msg=" + msg + "]");
-            socket1.emit('message_to_server', { roomName, from: userName, msg });
+        function sendToServer(msg, room_name) {
+            console.log("LOG: [EVENT=message_to_server] [room_name=" + room_name + "] [from=" + username + "] [msg=" + msg + "]");
+            sock.emit('message_to_server', { room_name, from: username, msg });
         }
         //+++++++++++++++++++++++++++++++++++++
         function decryptedMSG(value) {
@@ -186,82 +187,82 @@
         }
 
         //USERNAME GIVEN, HIDE IT AND SHOW TOKEN INPUT
-        tun.addEventListener("keyup", function (event) {
+        usernameDOM.addEventListener("keyup", function (event) {
             if (event.keyCode === 13) {
                 event.preventDefault();
                 //+++++++++++++++++++++++++++++++++++++
-                if (tun.value != "") {
-                    userName = tun.value;
-                    //REMOVE TUN
-                    removeElement(tun);
-                    //SHOW TTOK
-                    toggleShow(ttok);
-                    ttok.focus();
-                    //mod tin
-                    tin.placeholder = "say something " + userName;
+                if (usernameDOM.value != "") {
+                    username = usernameDOM.value;
+                    //REMOVE usernameDOM
+                    removeElement(usernameDOM);
+                    //SHOW tokenDOM
+                    toggleShow(tokenDOM);
+                    tokenDOM.focus();
+                    //mod inputDOM
+                    inputDOM.placeholder = "say something " + username;
                 } else {
-                    tun.placeholder = "admin: what was that?";
-                    setTimeout(() => { tun.placeholder = "enter username"; }, 1000);
+                    usernameDOM.placeholder = "admin: what was that?";
+                    setTimeout(() => { usernameDOM.placeholder = "enter username"; }, 1000);
                 }
                 //+++++++++++++++++++++++++++++++++++++
             }
         });
 
         //TOKEN GIVEN, HIDE IT AND SHOW TERMINAL OUTPUT AND INPUT
-        ttok.addEventListener("keyup", function (event) {
+        tokenDOM.addEventListener("keyup", function (event) {
             if (event.keyCode === 13) {
                 event.preventDefault();
                 //+++++++++++++++++++++++++++++++++++++
-                if (ttok.value != "") {
-                    //SAVE TTOK VALUE
-                    ttokValue = ttok.value;
+                if (tokenDOM.value != "") {
+                    //SAVE tokenDOM VALUE
+                    token = tokenDOM.value;
                     //CREATE A ROOM IN SEVERSIDE: ROOM
-                    roomName = ttokValue;
-                    socket1.emit('join_room', roomName);
+                    room_name = token;
+                    sock.emit('join_room', room_name);
 
-                    //REMOVE TTOK
-                    removeElement(ttok);
+                    //REMOVE tokenDOM
+                    removeElement(tokenDOM);
                     //SHOW TERMINAL OUT AND INT
-                    toggleShow(tout);
-                    toggleShow(tin);
-                    tin.focus();
+                    toggleShow(outputDOM);
+                    toggleShow(inputDOM);
+                    inputDOM.focus();
                 } else {
-                    ttok.placeholder = "admin: what was that?";
-                    setTimeout(() => { ttok.placeholder = "enter secret token"; }, 1000);
+                    tokenDOM.placeholder = "admin: what was that?";
+                    setTimeout(() => { tokenDOM.placeholder = "enter secret token"; }, 1000);
                 }
                 //+++++++++++++++++++++++++++++++++++++
             }
         });
 
         //USER GAVE INPUT, APPEND TO OUTPUT TERMINAL + SEND TO SERVER
-        tin.addEventListener("keyup", function (event) {
+        inputDOM.addEventListener("keyup", function (event) {
             if (event.keyCode === 13) {
                 event.preventDefault();
                 //+++++++++++++++++++++++++++++++++++++
-                if (tin.value != "") {
+                if (inputDOM.value != "") {
                     //SEND TO SERVER
-                    sendToServer(tin.value, ttokValue);
+                    sendToServer(inputDOM.value, token);
                     //RESET INPUT TERMINAL
-                    tin.value = ""
+                    inputDOM.value = ""
                 } else {
-                    tin.placeholder = "admin: what was that?";
-                    setTimeout(() => { tin.placeholder = "say something " + userName; }, 1000);
+                    inputDOM.placeholder = "admin: what was that?";
+                    setTimeout(() => { inputDOM.placeholder = "say something " + username; }, 1000);
                 }
                 //+++++++++++++++++++++++++++++++++++++
             }
         });
         //+++++++++++++++++++++++++++++++++++++
-        function makeTINFocus() {
-            tout.blur;
-            tin.focus();
+        function makeinputDOMFocus() {
+            outputDOM.blur;
+            inputDOM.focus();
         }
+        //+++++++++++++++++++++++++++++++++++++ ALWAYS FOCUS TO INPUT
+        inputDOM.onmouseout = makeinputDOMFocus;
+        outputDOM.onmouseenter = makeinputDOMFocus;
+        outputDOM.onclick = makeinputDOMFocus;
+        bodyDOM.onmouseenter = makeinputDOMFocus;
+        bodyDOM.onclick = makeinputDOMFocus;
         //+++++++++++++++++++++++++++++++++++++
-        tin.onmouseout = makeTINFocus;
-        tout.onmouseenter = makeTINFocus;
-        tout.onclick = makeTINFocus;
-
-
-
 
     </script>
 </body>
