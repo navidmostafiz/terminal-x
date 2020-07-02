@@ -8,7 +8,7 @@
 
     <style>
         body {
-            background-color: blueviolet;
+            background-color: black;
             margin: 0;
             padding: 0;
             display: inline;
@@ -45,10 +45,8 @@
     <input id="tokenID" class="tokenC" type="password" name="tokenN" placeholder="enter secret token">
     <!-- <textarea id="outputID" class="outputC" name="outputDOMN" row=0 readonly
         placeholder="admin: terminal-x is loading..."></textarea> -->
-
-    <div id="outputID" class="outputC" name="outputDOMN">
-        admin: welcome to terminal-x
-
+    <div id="outputID" class="outputC" name="outputN">
+        <p class="outputC" >admin: welcome to terminal-x</p>
     </div>
 
     <input id="inputID" class="inputC" type="text" name="inputDOMN" placeholder=" says">
@@ -219,7 +217,6 @@
                     //CREATE A ROOM IN SEVERSIDE: ROOM
                     room_name = token;
                     sock.emit('join_room', room_name);
-
                     //REMOVE tokenDOM
                     removeElement(tokenDOM);
                     //SHOW TERMINAL OUT AND INT
