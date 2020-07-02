@@ -3,7 +3,7 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-const PORT = process.env.PORT || 5000
+var PORT = process.env.PORT || 5000;
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/termx.html');
@@ -47,7 +47,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.checkText = exports.emojiMap = void 0;
 
 /* eslint-disable linebreak-style */
-const emojiMap = {
+var emojiMap = {
   'o/': '👋',
   '</3': '💔',
   '<3': '💗',
@@ -59,9 +59,9 @@ const emojiMap = {
   ':D': '😁',
   'B^D': '😁',
   'X-D': '😁',
-  XD: '😁',
+  'XD': '😁',
   'x-D': '😁',
-  xD: '😁',
+  'xD': '😁',
   ':\')': '😂',
   ':\'-)': '😂',
   ':-))': '😃',
@@ -119,10 +119,10 @@ const emojiMap = {
   ':þ': '😜',
   ';(': '😜',
   'X-P': '😜',
-  XP: '😜',
+  'XP': '😜',
   'd:': '😜',
   'x-p': '😜',
-  xp: '😜',
+  'xp': '😜',
   ':-||': '😠',
   ':@': '😠',
   ':-.': '😡',
@@ -141,11 +141,11 @@ const emojiMap = {
   ':###..': '😰',
   ':-###..': '😰',
   'D-\':': '😱',
-  D8: '😱',
+  'D8': '😱',
   'D:': '😱',
   'D:<': '😱',
   'D;': '😱',
-  DX: '😱',
+  'DX': '😱',
   'v.v': '😱',
   '8-0': '😲',
   ':-O': '😲',
@@ -153,11 +153,11 @@ const emojiMap = {
   ':O': '😲',
   ':o': '😲',
   'O-O': '😲',
-  O_O: '😲',
-  O_o: '😲',
+  'O_O': '😲',
+  'O_o': '😲',
   'o-o': '😲',
-  o_O: '😲',
-  o_o: '😲',
+  'o_O': '😲',
+  'o_o': '😲',
   ':$': '😳',
   '#-)': '😵',
   ':#': '😶',
@@ -169,7 +169,7 @@ const emojiMap = {
   ':-J': '😼',
   ':*': '😽',
   ':^*': '😽',
-  ಠ_ಠ: '🙅',
+  'ಠ_ಠ': '🙅',
   '*\\0/*': '🙆',
   '\\o/': '🙆',
   ':>': '😄',
@@ -189,9 +189,9 @@ const emojiMap = {
 };
 exports.emojiMap = emojiMap;
 
-const checkText = text => {
-  const words = text && text.split(' ');
-  const newText = [];
+var checkText = text => {
+  var words = text && text.split(' ');
+  var newText = [];
 
   if (words) {
     words.forEach(word => {
