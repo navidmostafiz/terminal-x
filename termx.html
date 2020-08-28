@@ -46,8 +46,8 @@
 
   <body>
     <!-- ALL HTML GOES HERE -->
-    <video class="fun" id="local_video_id" width="100px" autoplay muted></video>
-    <video class="fun" id="remote_video_id" width="100px" autoplay></video>
+    <!-- <video class="fun" id="local_video_id" width="100px" autoplay muted></video>
+    <video class="fun" id="remote_video_id" width="100px" autoplay></video> -->
     <input
       id="usernameID"
       class="usernameC"
@@ -308,24 +308,24 @@
       outputDOM.onclick = makeinputDOMFocus;
       bodyDOM.onmouseenter = makeinputDOMFocus;
       bodyDOM.onclick = makeinputDOMFocus;
-      //+++++++++++++++++++++++++++++++++++++
-      navigator.getUserMedia =
-        navigator.getUserMedia ||
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia;
+      //+++++++++++++++++++++++++++++++++++++ VDO CODE HERE
+      // navigator.getUserMedia =
+      //   navigator.getUserMedia ||
+      //   navigator.webkitGetUserMedia ||
+      //   navigator.mozGetUserMedia;
 
-      navigator.getUserMedia(
-        { video: true, audio: true },
-        (stream) => {
-          const localVideo = document.getElementById("local_video_id");
-          if (localVideo) {
-            localVideo.srcObject = stream;
-          }
-        },
-        (error) => {
-          console.warn(error.message);
-        }
-      );
+      // navigator.getUserMedia(
+      //   { video: true, audio: true },
+      //   (stream) => {
+      //     const localVideo = document.getElementById("local_video_id");
+      //     if (localVideo) {
+      //       localVideo.srcObject = stream;
+      //     }
+      //   },
+      //   (error) => {
+      //     console.warn(error.message);
+      //   }
+      // );
     </script>
   </body>
 </html>
