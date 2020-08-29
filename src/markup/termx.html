@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- ALL META GOES HERE -->
+    <meta charset="utf-8" />
+    <title>terminal-x</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <!-- ALL CSS GOES HERE -->
+    <link rel="stylesheet" href="termx.css" />
+  </head>
+  <body>
+    <!-- ALL HTML GOES HERE -->
+    <input
+      id="usernameID"
+      class="usernameC"
+      type="text"
+      name="usernameN"
+      placeholder="enter username"
+    />
+
+    <input
+      id="tokenID"
+      class="tokenC"
+      type="password"
+      name="tokenN"
+      placeholder="enter secret token"
+    />
+
+    <div id="outputID" class="outputC" name="outputN">
+      <p class="outputC">[[ terminal-x ]]</p>
+    </div>
+
+    <input
+      id="inputID"
+      class="inputC"
+      type="text"
+      name="inputDOMN"
+      placeholder=" says"
+    />
+    <!-- ALL SCRIPTS GOES HERE -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/termxc.js"></script>
+  </body>
+</html>
