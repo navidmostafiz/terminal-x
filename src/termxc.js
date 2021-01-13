@@ -91,10 +91,8 @@ function addPingPing(from, msg) {
 }
 //+++++++++++++++++++++++++++++++++++++
 function pingping(n) {
-  var myMusic = new sound("/ping.mp3");
-  myMusic.play();
   for (; n < 5; n++) {
-    myMusic.play();
+    document.getElementById("audio1").play();
     console.log("pingping!");
   }
 }
@@ -103,7 +101,7 @@ function pingping(n) {
 //+++++++++++++++++++++++++++++++++++++
 sock.on("message_to_client", function ({ from, msg }) {
   //ping for incoming
-  // pingping(2);
+  pingping(2);
 
   logit(
     "LOG: [EVENT=message_to_client] [room_name=" +
