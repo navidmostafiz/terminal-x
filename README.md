@@ -33,6 +33,12 @@ git clone https://github.com/navidmostafiz/terminal-x.git
 npm install
 ```
 
+# BUILD AND COMPRESS
+
+```
+./do.sh
+```
+
 # RUN IN PRODUCTION
 
 ```

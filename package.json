@@ -4,8 +4,8 @@
   "description": "socket terminal chat app",
   "main": "termx.js",
   "scripts": {
-    "start": "node termx.js",
-    "dev": "nodemon termx.js"
+    "start": "node src/termx.js",
+    "dev": "nodemon src/termx.js"
   },
   "repository": {
     "type": "git",

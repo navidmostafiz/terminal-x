@@ -1,5 +1,5 @@
 // ENV
-var DEV = false;
+var DEV = true;
 //SOCKET CONNECTION CHATROOM
 var sock = io.connect();
 var bodyDOM = document.getElementsByTagName("BODY")[0];
@@ -72,14 +72,38 @@ function getDataType(msg) {
     msg.includes(".org")
   ) {
     return "link";
+  } else if (msg.includes("ping:")) {
+    return "pingping";
   } else {
     return "text";
+  }
+}
+//+++++++++++++++++++++++++++++++++++++
+function addPingPing(from, msg) {
+  var myMusic = new sound("ping-laugh.mp3");
+  myMusic.play();
+  var paraNODE = document.createElement("P");
+  paraNODE.style.margin = 0;
+  var textnode = document.createTextNode(from + ": " + decryptedMSG(msg));
+  paraNODE.appendChild(textnode);
+  outputDOM.appendChild(paraNODE);
+}
+//+++++++++++++++++++++++++++++++++++++
+function pingping(n) {
+  var myMusic = new sound("ping-laugh.mp3");
+  myMusic.play();
+  for (; n < 5; n++) {
+    myMusic.play();
+    console.log("pingping!");
   }
 }
 //+++++++++++++++++++++++++++++++++++++
 // LISTENER TO SERVER:
 //+++++++++++++++++++++++++++++++++++++
 sock.on("message_to_client", function ({ from, msg }) {
+  //ping for incoming
+  // pingping(2);
+
   logit(
     "LOG: [EVENT=message_to_client] [room_name=" +
       room_name +
@@ -101,6 +125,9 @@ sock.on("message_to_client", function ({ from, msg }) {
       break;
     case "text":
       addText(from, msg);
+      break;
+    case "pingping":
+      addPingPing(from, msg);
       break;
     default:
       addText(from, msg);
