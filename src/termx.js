@@ -6,7 +6,7 @@ var io = require("socket.io")(http);
 var PORT = process.env.PORT || 9000;
 
 //ENV
-var DEV = false;
+var DEV = true;
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/termx.html");
@@ -22,6 +22,10 @@ app.get("/termxc.js", (req, res) => {
 
 app.get("/favicon.ico", (req, res) => {
   res.sendFile(__dirname + "/favicon.ico");
+});
+
+app.get("/ping.mp3", (req, res) => {
+  res.sendFile(__dirname + "/ping.mp3");
 });
 
 // server side code: ROOM

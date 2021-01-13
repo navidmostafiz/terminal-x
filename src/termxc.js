@@ -80,17 +80,18 @@ function getDataType(msg) {
 }
 //+++++++++++++++++++++++++++++++++++++
 function addPingPing(from, msg) {
-  var myMusic = new sound("ping-laugh.mp3");
-  myMusic.play();
   var paraNODE = document.createElement("P");
   paraNODE.style.margin = 0;
   var textnode = document.createTextNode(from + ": " + decryptedMSG(msg));
   paraNODE.appendChild(textnode);
   outputDOM.appendChild(paraNODE);
+  //play ping
+  document.getElementById("audio1").play();
+  document.getElementById("audio2").play();
 }
 //+++++++++++++++++++++++++++++++++++++
 function pingping(n) {
-  var myMusic = new sound("ping-laugh.mp3");
+  var myMusic = new sound("/ping.mp3");
   myMusic.play();
   for (; n < 5; n++) {
     myMusic.play();
