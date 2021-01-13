@@ -86,12 +86,12 @@ function addPingPing(from, msg) {
   paraNODE.appendChild(textnode);
   outputDOM.appendChild(paraNODE);
   //play ping
-  document.getElementById("audio1").play();
+  // document.getElementById("audio1").play();
   document.getElementById("audio2").play();
 }
 //+++++++++++++++++++++++++++++++++++++
 function pingping(n) {
-  for (; n < 5; n++) {
+  for (var i = 0; i < n; i++) {
     document.getElementById("audio1").play();
     console.log("pingping!");
   }

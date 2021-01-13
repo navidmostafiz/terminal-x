@@ -5,6 +5,7 @@
   "main": "termx.js",
   "scripts": {
     "start": "node dist/termx.js",
+    "build": "./build.sh",
     "dev": "nodemon src/termx.js"
   },
   "repository": {
