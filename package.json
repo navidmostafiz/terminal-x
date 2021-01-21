@@ -23,7 +23,7 @@
   "homepage": "https://github.com/navidmostafiz/terminal-x#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.4.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
